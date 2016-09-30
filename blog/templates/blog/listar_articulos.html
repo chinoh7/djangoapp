@@ -1,0 +1,13 @@
+{% extends 'blog/base.html' %}
+
+ {% block content %}
+     {% for Postear in posts %}
+          <div class="post">
+              <div class="date">
+                   {{ Postear.fecha_publicacion }}
+               </div>
+                 <h1><a href="{% url 'blog.views.post_detail' pk=Postear.pk%}">{{ Postear.titulo }}</a></h1>
+                 <p>{{ Postear.texto|linebreaksbr }}</p>
+         </div>
+                {% endfor %}
+{% endblock content %}
