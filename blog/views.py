@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from django.utils import timezone
 from .models import Postear
 from .forms import PostearForm
+from django.shortcuts import redirect
 
 def post_list(request):
 	posts = Postear.objects.filter(fecha_publicacion__lte=timezone.now()).order_by('fecha_publicacion')
@@ -15,7 +16,7 @@ def post_new(request):
     if request.method == "POST":
         formulario = PostearForm(request.POST)
         if formulario.is_valid():
-            post = form.save(commit=False)
+            post = formulario.save(commit=False)
             post.autor = request.user
             post.fecha_publicacion = timezone.now()
             post.save()
@@ -26,13 +27,13 @@ def post_new(request):
 
 def post_edit(request, pk):
     post = get_object_or_404(Postear, pk=pk)
-    if request.method == "Postear":
-        formulario = PostearForm(request.Postear, instance=Postear)
+    if request.method == "POST":
+        formulario = PostearForm(request.POST, instance=post)
         if formulario.is_valid():
-            post = form.save(commit=False)
+            post = formulario.save(commit=False)
             post.autor = request.user
             post.save()
-            return redirect('blog.views.detalle_articulo', pk=post.pk)
+            return redirect('blog.views.post_detail', pk=post.pk)
     else:
         formulario = PostearForm(instance=post)
     return render(request, 'blog/editar_articulo.html', {'formulario': formulario})
